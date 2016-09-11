@@ -62,6 +62,9 @@ export const style = {
     justifyContent: "space-around",
     alignItems: "center"
   },
+  close: {
+    cursor: "pointer"
+  },
   logo: {
     display: "flex",
     flexFlow: "row nowrap",
