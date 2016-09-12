@@ -23,6 +23,13 @@ export class PhoenixChatSidebar extends React.Component {
     this.closeChat = this.closeChat.bind(this)
   }
 
+  componentDidUpdate() {
+    if (this.props.messages.length > 0) {
+      const lastMessage = this[`chatMessage:${this.props.messages.length - 1}`]
+      this.chatContainer.scrollTop = lastMessage.offsetTop
+    }
+  }
+
   closeChat() {
     this.props.toggleChat()
   }
@@ -102,6 +109,7 @@ export class PhoenixChat extends React.Component {
 
   componentWillUnmount() {
     this.channel.leave()
+    this.adminChannel.leave()
   }
 
   componentDidMount() {
@@ -110,7 +118,7 @@ export class PhoenixChat extends React.Component {
     }
 
     this.uuid = localStorage.phoenix_chat_uuid
-    const params = { uuid: this.uuid }
+    const params = { uuid: this.uuid, public_key: this.props.token }
     this.socket = new Socket("ws://localhost:4000/socket", { params })
     this.socket.connect()
 
@@ -118,7 +126,7 @@ export class PhoenixChat extends React.Component {
   }
 
   handleMessageSubmit(e) {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && this.state.input !== "") {
       this.channel.push('message', {
         room: localStorage.phoenix_chat_uuid,
         body: this.state.input,
@@ -149,6 +157,12 @@ export class PhoenixChat extends React.Component {
         messages: this.state.messages.concat([payload])
       })
     })
+
+    this.adminChannel = this.socket.channel(`admin:active_users`)
+    this.adminChannel.join()
+      .receive("ok", () => {
+        console.log(`Succesfully joined the active_users topic.`)
+      })
   }
 
   toggleChat() {
