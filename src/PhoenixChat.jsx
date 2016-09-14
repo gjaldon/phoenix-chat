@@ -35,8 +35,8 @@ export class PhoenixChatSidebar extends React.Component {
   }
 
   render() {
-    const list = !this.props.messages ? null : this.props.messages.map(({ body, id, from }, i) => {
-      const right = from === localStorage.phoenix_chat_uuid
+    const list = !this.props.messages ? null : this.props.messages.map(({ body, id, from, uuid }, i) => {
+      const right = uuid === localStorage.phoenix_chat_uuid
 
       return (
         <div
