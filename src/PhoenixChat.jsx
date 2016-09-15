@@ -101,12 +101,6 @@ export class PhoenixChat extends React.Component {
     this.configureChannels = this.configureChannels.bind(this)
   }
 
-  componentDidMount() {
-    this.socket = new Socket("ws://localhost:4000/socket")
-    this.socket.connect()
-    this.configureChannels("foo")
-  }
-
   componentWillUnmount() {
     this.channel.leave()
     this.adminChannel.leave()
